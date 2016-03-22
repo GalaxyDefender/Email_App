@@ -1,4 +1,5 @@
 var express = require('express');
+var expressMail = require('express-mail');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -9,6 +10,40 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+
+// Configure express-mail and setup default mail data
+expressMail.extend(app, {
+  transport: 'SMTP',
+  config: {
+    service: 'Gmail',
+    auth: {
+      user: 'qgerard.gerard@gmail.com',
+      pass: 'Qu3ntin1988'
+    }
+  },
+  defaults: {
+    from: 'qgerard.gerard@gmail.com'
+  }
+});
+
+// Setup email data
+var mailOptions = {
+  to: 'qgerard.gerard@gmail.com',
+  subject: 'Hello from Express Mail!',
+  locals: {
+    title: 'Hello from Express Mail!',
+    message: 'Welcome to my website'
+  }
+}
+
+// Send email
+app.send('mail', mailOptions, function(err, res){
+  if (err) {
+    console.log(err);
+  } else {
+    console.log('Message sent: ' + res.message);
+  }
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
