@@ -1,4 +1,5 @@
 var express = require('express');
+var nodemailer = require('nodemailer');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -13,6 +14,31 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
+// create reusable transport object using the default SMTP transport
+var transporter = nodemailer.createTransport('SMTP', {
+  service: 'Gmail',
+  auth: {
+    user: 'qgerard.gerard@gmail.com',
+    pass: 'Qu3ntin1988'
+  }
+});
+
+// setup e-mail data 
+var mailOptions = {
+  from: 'qgerard.gerard@gmail.com',
+  to: 'qgerard.gerard@gmail.com',
+  subject: 'Hello this is Nodemailer',
+  text: 'Hello this is a node test'
+};
+
+// send mail with defined transport object
+transporter.sendMail(mailOptions, function(err, info){
+  if (err) {
+    return console.log(err);
+  }
+  console.log('Message sent: ' + info.response);
+});
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
