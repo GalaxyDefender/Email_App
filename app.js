@@ -1,5 +1,6 @@
 var express = require('express');
 var nodemailer = require('nodemailer');
+var xoauth2 = require('xoauth2');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -15,12 +16,54 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+// xoauth2gen = xoauth2.createXOAuth2Generator({
+//     user: "qgerard.gerard@gmail.com",
+//     clientId: "{Client ID}",
+//     clientSecret: "{Client Secret}",
+//     refreshToken: "{User Refresh Token}",
+//     customHeaders: {
+//       "HeaderName": "HeaderValue"
+//     },
+//     customPayload: {
+//       "payloadParamName": "payloadValue"
+//     },
+//     token: true,
+//     accessToken: true
+// });
+
+// // SMTP/IMAP
+// xoauth2gen.getToken(function(err, token){
+//     if(err){
+//         return console.log(err);
+//     }
+//     console.log("AUTH XOAUTH2 " + token);
+// });
+
+// // HTTP
+// xoauth2gen.getToken(function(err, token, accessToken){
+//     if(err){
+//         return console.log(err);
+//     }
+//     console.log("Authorization: Bearer " + accessToken);
+// });
+
+// // Listen for token updates (if refreshToken is set)
+// // you probably want to store these to a db
+// xoauth2.on('token', function(token){
+//   console.log('New token for %s: %s', token.user, token.accessToken);
+// });
+
 // create reusable transport object using the default SMTP transport
 var transporter = nodemailer.createTransport('SMTP', {
   service: 'Gmail',
   auth: {
-    user: 'qgerard.gerard@gmail.com',
-    pass: 'Qu3ntin1988'
+    xoauth2: xoauth2.createXOAuth2Generator({
+      user: 'qgerard.gerard@gmail.com',
+      clientId: '213095124748-ae5q087i1vbvsfh633fs6tdtvp7naijb.apps.googleusercontent.com',
+      clientSecret: '2MwXP8hgP2JvubwMh8IKiCm6',
+      refreshToken: '1/zZk5SYCpdZeSurGNsYUXteks5zr1l86jxKVQ0scgDQk',
+      accessToken: 'ya29.rgIDxSb1MAfgpe4egB3p8N3gLiroWB6ZI2ytaDW2WFj2PCtjXwC5WRdNCE2r65p1JA'
+    })
   }
 });
 
@@ -28,7 +71,7 @@ var transporter = nodemailer.createTransport('SMTP', {
 var mailOptions = {
   from: 'qgerard.gerard@gmail.com',
   to: 'qgerard.gerard@gmail.com',
-  subject: 'Hello this is Nodemailer',
+  subject: 'Another Hello this is Nodemailer',
   text: 'Hello this is a node test'
 };
 
