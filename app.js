@@ -28,6 +28,22 @@ mailer.extend(app, {
   }
 });
 
+app.get('/', function(req, res, next){
+  app.mailer.send('email', {
+    to: 'qgerard.gerard@gmail.com',
+    subject: 'Test Email',
+    otherProperty: 'Other Property'
+  }, function(err){
+    if (err) {
+      // handle error
+      console.log(err);
+      res.send('There was an error sending the email');
+      return;
+    }
+    res.send('Email Sent');
+  });
+});
+
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
