@@ -4,11 +4,44 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var nodemailer = require('nodemailer');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+
+// create reusable transport method (opens pool of SMTP connections)
+var smtpTransport = nodemailer.createTransport("SMTP",{
+    host: "smtp.gmail.com",
+    secureConnection: true,
+    port: 465,
+    auth: {
+        user: "qgerard.gerard@gmail.com",
+        pass: "mwcciqcglhnukibf"
+    }
+});
+
+// setup e-mail data with unicode symbols
+var mailOptions = {
+    from: "qgerard.gerard@gmail.com", // sender address
+    to: "quentin@realtelematics.co.za", // list of receivers
+    subject: "Hello ✔", // Subject line
+    text: "Hello world ✔", // plaintext body
+    html: "<b>Hello world ✔</b>" // html body
+}
+
+// send mail with defined transport object
+smtpTransport.sendMail(mailOptions, function(error, response){
+    if(error){
+        console.log(error);
+    }else{
+        console.log("Message sent: " + response.message);
+    }
+
+    // if you don't want to use this transport object anymore, uncomment following line
+    smtpTransport.close(); // shut down the connection pool, no more messages
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
