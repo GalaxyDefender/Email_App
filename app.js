@@ -11,37 +11,6 @@ var users = require('./routes/users');
 
 var app = express();
 
-// create reusable transport method (opens pool of SMTP connections)
-var smtpTransport = nodemailer.createTransport("SMTP",{
-    host: "smtp.gmail.com",
-    secureConnection: true,
-    port: 465,
-    auth: {
-        user: "qgerard.gerard@gmail.com",
-        pass: "mwcciqcglhnukibf"
-    }
-});
-
-// setup e-mail data with unicode symbols
-var mailOptions = {
-    from: "qgerard.gerard@gmail.com", // sender address
-    to: "qgerard.gerard@gmail.com", // list of receivers
-    subject: {{title}}, // Subject line
-    text: "Hello world ✔" // plaintext body
-}
-
-// send mail with defined transport object
-smtpTransport.sendMail(mailOptions, function(error, response){
-    if(error){
-        console.log(error);
-    }else{
-        console.log("Message sent: " + response.message);
-    }
-
-    // if you don't want to use this transport object anymore, uncomment following line
-    smtpTransport.close(); // shut down the connection pool, no more messages
-});
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -50,9 +19,42 @@ app.set('view engine', 'jade');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// MUST be after bodyParser have been declared
+app.post('/contact', function(req,res){
+  var mailOpts, smtpTrans;
+
+
+  mailOpts = {
+    from: req.body.username + ' <' + req.body.email + '>',
+    to: 'quentin@realtelematics.co.za',
+    subject: 'Website contact',
+    text: req.body.message
+  };
+
+  smtpTrans = nodemailer.createTransport("SMTP",{
+    service: "Gmail",
+    auth: {
+        user: "qgerard.gerard@gmail.com",
+        pass: "mwcciqcglhnukibf"
+    }
+  });
+
+  smtpTrans.sendMail(mailOpts, function(error, message){
+    if(error){
+          console.log(error);
+      }else{
+          console.log("Message sent");
+        }
+
+  });
+    console.log(req.body.username + ' <' + req.body.email + '>');
+    res.render('contact', {title: 'Thanks'});
+    smtpTrans.close();
+});
 
 app.use('/', routes);
 app.use('/users', users);
