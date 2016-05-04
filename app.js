@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var nodemailer = require('nodemailer');
+var https = require('https');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -26,7 +27,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 // MUST be after bodyParser have been declared
 app.post('/contact', function(req,res){
   var mailOpts, smtpTrans;
+  var googleResponse = "";
 
+  var httpsReq = https.request('https://www.google.com/recaptcha/api/siteverify' + '?secret=6LfoDx8TAAAAAJEfLEqpK88UWY1yJb6NMwfkSll7' + '&response=' + req.body["g-recaptcha-response"], function(httpsRes){
+    httpsRes.on("data", function(chunk){
+      googleResponse += chunk;
+    });
+    httpsRes.on("end", function(){
+      var human = JSON.parse(googleResponse).success;
+      res.send(human);
+    });
+  });
+
+  httpsReq.on("error", function(err){
+    res.send("Error:" + JSON.stringify(err));
+  });
+
+  httpsReq.end();
 
   mailOpts = {
     from: 'qgerard.gerard@gmail.com',
