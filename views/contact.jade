@@ -5,7 +5,6 @@ block content
   p Welcome to #{title}
   div.content
     form(action="/contact", name="contactus", id="contactus", method="post")
-      != recaptcha_form
       fieldset
         p
           label(for="username") Name:
