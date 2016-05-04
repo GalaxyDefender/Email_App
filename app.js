@@ -5,6 +5,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var nodemailer = require('nodemailer');
+var recaptcha = require('node-no-captcha');
+var secret = '6LcLDB8TAAAAAAGpQObES-oduB7dN8aXkWKj2yk0';
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -24,7 +26,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // MUST be after bodyParser have been declared
-app.post('/contact', function(req,res){
+app.post('/contact', recaptcha.verify(secret), function(req,res){
   var mailOpts, smtpTrans;
 
 
