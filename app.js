@@ -29,10 +29,11 @@ app.post('/contact', function(req,res){
 
 
   mailOpts = {
-    from: req.body.username + ' <' + req.body.email + '>',
+    from: 'qgerard.gerard@gmail.com',
     to: 'quentin@realtelematics.co.za',
     subject: 'Website contact',
-    text: req.body.message
+    text: req.body.message,
+    html: '<h1>Sender Name:</h1><h3>' + req.body.username + '</h3><h1>Email Address:</h1><h3>' + req.body.email + '</h3><p>' + req.body.message + '</p>'
   };
 
   smtpTrans = nodemailer.createTransport("SMTP",{
@@ -45,14 +46,15 @@ app.post('/contact', function(req,res){
 
   smtpTrans.sendMail(mailOpts, function(error, message){
     if(error){
+          res.render('contact', {title: 'Contact', status: 'Error sending message!'});
           console.log(error);
       }else{
+          console.log(req.body.username + ' <' + req.body.email + '>');
+          res.render('contact', {title: 'Contact', status: 'Message sent!'});
           console.log("Message sent");
         }
 
   });
-    console.log(req.body.username + ' <' + req.body.email + '>');
-    res.render('contact', {title: 'Thanks'});
     smtpTrans.close();
 });
 
