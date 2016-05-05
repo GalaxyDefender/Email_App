@@ -31,7 +31,7 @@ app.post('/contact', function(req,res){
   var SECRET = "6LfoDx8TAAAAAJEfLEqpK88UWY1yJb6NMwfkSll7";
 
   if(req.body["g-recaptcha-response"] === undefined || req.body["g-recaptcha-response"] === '' || req.body["g-recaptcha-response"] === null){
-    return res.json({"responseCode" : 1, "responseDesc" : "Please select captcha"});
+    return res.render('contact', {title: 'Contact', status: 'Please select CAPTCHA'});
   }
 
   var httpsReq = https.request('https://www.google.com/recaptcha/api/siteverify' + '?secret=' + SECRET + '&response=' + req.body["g-recaptcha-response"], function(httpsRes){
@@ -39,8 +39,9 @@ app.post('/contact', function(req,res){
       googleResponse += chunk;
     });
     httpsRes.on("end", function(){
-      var human = JSON.parse(googleResponse).success;
-      res.send(human);
+      // var human = JSON.parse(googleResponse).success;
+      // res.send(human);
+      res.render('contact', {title: 'Contact', status: 'Message sent!'});
     });
   });
 
