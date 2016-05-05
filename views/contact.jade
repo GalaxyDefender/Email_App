@@ -5,7 +5,7 @@ block content
   h1= title
   p Welcome to #{title}
 
-  div.content
+  div.content(style={display: 'none'})
     form(action="/contact", name="contactus", id="contactus", method="post")
       fieldset
         p
