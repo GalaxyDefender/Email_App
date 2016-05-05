@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var nodemailer = require('nodemailer');
 var https = require('https');
+var expressValidator = require('express-validator');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -23,6 +24,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(expressValidator); //required for Express-Validator
 
 // MUST be after bodyParser have been declared
 app.post('/contact', function(req,res){
