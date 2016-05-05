@@ -33,25 +33,6 @@ app.post('/contact', function(req,res){
   var googleResponse = "";
   var SECRET = "6LfoDx8TAAAAAJEfLEqpK88UWY1yJb6NMwfkSll7";
 
-  req.assert('username', 'Name is required').notEmpty();
-  req.assert('email', 'A valid email is required').isEmail();
-
-  var errors = req.validationErrors();
-
-  if (!errors) {
-    res.render('contact', {
-      title: 'Contact',
-      validation: 'Validation Passed',
-      errors: {}
-    });
-  } else {
-    res.render('contact', {
-      title: 'Contact',
-      validation: '',
-      errors: errors
-    });
-  }
-
   if(req.body["g-recaptcha-response"] === undefined || req.body["g-recaptcha-response"] === '' || req.body["g-recaptcha-response"] === null){
     return res.render('contact', {title: 'Contact', CAPTCHA: 'Please select CAPTCHA'});
   }

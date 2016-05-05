@@ -2,20 +2,8 @@ extends layout
 
 block content
 
-  -  function isEmptyObject(obj) {
-  -    var name;
-  -    for (name in obj) {
-  -      return false;}
-  -    return true;}
-
   h1= title
   p Welcome to #{title}
-
-  - if (isEmptyObject(errors) == false)
-    p.errorMessage= "The following errors occured:"
-    ul
-      - each error in errors
-        li= error.msg
 
   div.content
     form(action="/contact", name="contactus", id="contactus", method="post")
@@ -23,20 +11,19 @@ block content
         p
           label(for="username") Name:
           br
-          input(name="username", type="text", id="username")
+          input(name="username", type="text", id="username", required)
         p
           label(for="email") Email:
           br
-          input(name="email", type="email",id="email")
+          input(name="email", type="email",id="email", required)
         p
           label(for="message") Message:
           br
-          textarea(name="message", cols="40", rows="10", id="message")
+          textarea(name="message", cols="40", rows="10", id="message", required)
         p
           div.g-recaptcha(data-sitekey="6LfoDx8TAAAAAA7NljOjYNY5ezHnYIdff63SgM3o")
         p
           input(name="submit", type="submit", value="Send", id="submit")
-  p #{validation}
   p #{CAPTCHA}
   p #{message_status}
 
