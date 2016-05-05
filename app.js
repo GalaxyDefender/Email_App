@@ -28,8 +28,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.post('/contact', function(req,res){
   var mailOpts, smtpTrans;
   var googleResponse = "";
+  var SECRET = "6LfoDx8TAAAAAJEfLEqpK88UWY1yJb6NMwfkSll7";
 
-  var httpsReq = https.request('https://www.google.com/recaptcha/api/siteverify' + '?secret=6LfoDx8TAAAAAJEfLEqpK88UWY1yJb6NMwfkSll7' + '&response=' + req.body["g-recaptcha-response"], function(httpsRes){
+  if(req.body["g-recaptcha-response"] === undefined || req.body["g-recaptcha-response"] === '' || req.body["g-recaptcha-response"] === null){
+    return res.json({"responseCode" : 1, "responseDesc" : "Please select captcha"});
+  }
+
+  var httpsReq = https.request('https://www.google.com/recaptcha/api/siteverify' + '?secret=' + SECRET + '&response=' + req.body["g-recaptcha-response"], function(httpsRes){
     httpsRes.on("data", function(chunk){
       googleResponse += chunk;
     });
