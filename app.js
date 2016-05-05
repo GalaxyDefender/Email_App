@@ -22,18 +22,38 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(expressValidator()); //required for Express-Validator
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(expressValidator); //required for Express-Validator
 
 // MUST be after bodyParser have been declared
 app.post('/contact', function(req,res){
   var mailOpts, smtpTrans;
+
   var googleResponse = "";
   var SECRET = "6LfoDx8TAAAAAJEfLEqpK88UWY1yJb6NMwfkSll7";
 
+  req.assert('username', 'Name is required').notEmpty();
+  req.assert('email', 'A valid email is required').isEmail();
+
+  var errors = req.validationErrors();
+
+  if (!errors) {
+    res.render('contact', {
+      title: 'Contact',
+      validation: 'Validation Passed',
+      errors: {}
+    });
+  } else {
+    res.render('contact', {
+      title: 'Contact',
+      validation: '',
+      errors: errors
+    });
+  }
+
   if(req.body["g-recaptcha-response"] === undefined || req.body["g-recaptcha-response"] === '' || req.body["g-recaptcha-response"] === null){
-    return res.render('contact', {title: 'Contact', status: 'Please select CAPTCHA'});
+    return res.render('contact', {title: 'Contact', CAPTCHA: 'Please select CAPTCHA'});
   }
 
   var httpsReq = https.request('https://www.google.com/recaptcha/api/siteverify' + '?secret=' + SECRET + '&response=' + req.body["g-recaptcha-response"], function(httpsRes){
@@ -43,7 +63,7 @@ app.post('/contact', function(req,res){
     httpsRes.on("end", function(){
       // var human = JSON.parse(googleResponse).success;
       // res.send(human);
-      res.render('contact', {title: 'Contact', status: 'Message sent!'});
+      res.render('contact', {title: 'Contact', message_status: 'Message sent!'});
     });
   });
 
@@ -71,11 +91,11 @@ app.post('/contact', function(req,res){
 
   smtpTrans.sendMail(mailOpts, function(error, message){
     if(error){
-          res.render('contact', {title: 'Contact', status: 'Error sending message!'});
+          res.render('contact', {title: 'Contact', message_status: 'Error sending message!'});
           console.log(error);
       }else{
           console.log(req.body.username + ' <' + req.body.email + '>');
-          res.render('contact', {title: 'Contact', status: 'Message sent!'});
+          res.render('contact', {title: 'Contact', message_status: 'Message sent!'});
           console.log("Message sent");
         }
 

@@ -1,8 +1,22 @@
 extends layout
 
 block content
+
+  -  function isEmptyObject(obj) {
+  -    var name;
+  -    for (name in obj) {
+  -      return false;}
+  -    return true;}
+
   h1= title
   p Welcome to #{title}
+
+  - if (isEmptyObject(errors) == false)
+    p.errorMessage= "The following errors occured:"
+    ul
+      - each error in errors
+        li= error.msg
+
   div.content
     form(action="/contact", name="contactus", id="contactus", method="post")
       fieldset
@@ -22,6 +36,9 @@ block content
           div.g-recaptcha(data-sitekey="6LfoDx8TAAAAAA7NljOjYNY5ezHnYIdff63SgM3o")
         p
           input(name="submit", type="submit", value="Send", id="submit")
-  p #{status}
+  p #{validation}
+  p #{CAPTCHA}
+  p #{message_status}
+
   script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js')
   script(src='http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js')
