@@ -57,9 +57,8 @@ app.post('/contact', function(req,res){
   mailOpts = {
     from: 'qgerard.gerard@gmail.com',
     to: 'quentin@realtelematics.co.za',
-    subject: 'Website contact',
-    text: req.body.message,
-    html: '<h1>Sender Name:</h1><h3>' + req.body.username + '</h3><h1>Email Address:</h1><h3>' + req.body.email + '</h3><p>' + req.body.message + '</p>'
+    subject: 'Website contact - ' + req.body.subject,
+    html: '<h1>' + req.body.subject + '</h1><p>' + req.body.message + '</p><br><p>Name: ' + req.body.username + '</p><p>Email address: ' + req.body.email + '</p><p>Contact number: ' + req.body.contact_number + '</p>' 
   };
 
   smtpTrans = nodemailer.createTransport("SMTP",{
