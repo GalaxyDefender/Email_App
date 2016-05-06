@@ -6,7 +6,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var nodemailer = require('nodemailer');
 var https = require('https');
-var expressValidator = require('express-validator');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -22,7 +21,6 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(expressValidator()); //required for Express-Validator
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
