@@ -29,19 +29,19 @@ app.post('/contact', function(req,res){
   var mailOpts, smtpTrans;
 
   var googleResponse = "";
-  var SECRET = "6LfoDx8TAAAAAJEfLEqpK88UWY1yJb6NMwfkSll7";
+  var SECRET = "6LfoDx8TAAAAAJEfLEqpK88UWY1yJb6NMwfkSll7"; //secret key from google catcha
 
+  // Display's message when user didn't use CAPTCHA
   if(req.body["g-recaptcha-response"] === undefined || req.body["g-recaptcha-response"] === '' || req.body["g-recaptcha-response"] === null){
     return res.render('contact', {title: 'Contact', CAPTCHA: 'Please select CAPTCHA'});
   }
 
+  // This code figures out the CAPTCHA
   var httpsReq = https.request('https://www.google.com/recaptcha/api/siteverify' + '?secret=' + SECRET + '&response=' + req.body["g-recaptcha-response"], function(httpsRes){
     httpsRes.on("data", function(chunk){
       googleResponse += chunk;
     });
     httpsRes.on("end", function(){
-      // var human = JSON.parse(googleResponse).success;
-      // res.send(human);
       res.render('sent', {title: 'Message Sent!'});
     });
   });
@@ -52,6 +52,7 @@ app.post('/contact', function(req,res){
 
   httpsReq.end();
 
+  // mail options settings
   mailOpts = {
     from: 'qgerard.gerard@gmail.com',
     to: 'quentin@realtelematics.co.za',
@@ -59,6 +60,7 @@ app.post('/contact', function(req,res){
     html: '<h1>' + req.body.subject + '</h1><p>' + req.body.message + '</p><br><p>Name: ' + req.body.username + '</p><p>Email address: ' + req.body.email + '</p><p>Contact number: ' + req.body.contact_number + '</p>' 
   };
 
+  // SMTP transporter
   smtpTrans = nodemailer.createTransport("SMTP",{
     service: "Gmail",
     auth: {
@@ -67,6 +69,7 @@ app.post('/contact', function(req,res){
     }
   });
 
+  // Sending the email
   smtpTrans.sendMail(mailOpts, function(error, message){
     if(error){
           res.render('contact', {title: 'Contact', message_status: 'Error sending message!'});
