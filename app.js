@@ -44,7 +44,7 @@ app.post('/contact', function(req,res){
     httpsRes.on("end", function(){
       // var human = JSON.parse(googleResponse).success;
       // res.send(human);
-      res.render('contact', {title: 'Contact', message_status: 'Message sent!'});
+      res.render('sent', {title: 'Message Sent!'});
     });
   });
 
@@ -76,7 +76,7 @@ app.post('/contact', function(req,res){
           console.log(error);
       }else{
           console.log(req.body.username + ' <' + req.body.email + '>');
-          res.render('contact', {title: 'Contact', message_status: 'Message sent!'});
+          res.render('sent', {title: 'Contact', message_status: 'Message sent!'});
           console.log("Message sent");
         }
 
